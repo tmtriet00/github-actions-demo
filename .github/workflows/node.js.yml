@@ -3,8 +3,6 @@ name: Node.js CI
 on:
     push:
         branches: [master]
-    pull_request:
-        branches: [master]
 
 jobs:
     build:
@@ -23,3 +21,14 @@ jobs:
             - run: npm install
             - run: npm run build --if-present
             - run: npm test
+
+    deploy: ## <-- this is the new stuff
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v2
+        - uses: akhileshns/heroku-deploy@v3.12.12
+          with:
+              heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+              heroku_app_name: "github-actions-demo"
+              heroku_email: "github-actions-demo"
